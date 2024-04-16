@@ -35,18 +35,18 @@ app.post("/api/newUser", async (req, res) => {
   try {
     await client.connect();
     database = client.db("CryptoShadow");
-    const { email, balance, coins } = req.body;
+    const { emailId, balance, coins } = req.body;
 
     const CustomerDetails = database.collection("CustomerDetails");
-    let query = await CustomerDetails.findOne({ emailID: email });
+    let query = await CustomerDetails.findOne({ emailId: emailId });
     if (!query) {
       await CustomerDetails.insertOne({
-        emailID: email,
+        emailId: emailId,
         balance: balance,
         coins: coins,
       });
     }
-    query = await CustomerDetails.findOne({ emailID: email });
+    query = await CustomerDetails.findOne({ emailId: emailId });
     res.status(200).json(query);
   } catch (error) {
     console.log("Error ", error);
@@ -59,14 +59,14 @@ app.post("/api/updateData", async (req, res) => {
   try {
     await client.connect();
     database = client.db("CryptoShadow");
-    const { emailId, balance, coins } = req.body;
+    const { emailId, balance, coins} = req.body;
     console.log(req.body);
     const CustomerDetails = database.collection("CustomerDetails");
     await CustomerDetails.updateOne(
-      { "emailId": emailId },
-      { $set: { "balance": balance, "coins": coins } }
+      { emailId: emailId },
+      { $set: { balance: balance, coins: coins } }
     );
-    const query = await CustomerDetails.find({}).toArray();
+    const query = await CustomerDetails.findOne({emailId : emailId});
     res
       .status(200)
       .json({ message: "Data updated successfully", query});
